@@ -1,0 +1,1612 @@
+{% extends "base_app.html" %}
+{% set active_nav = 'activity' %}
+
+{% block title %}Login Activity{% endblock %}
+{% block page_title %}Login Activity{% endblock %}
+
+{% block page_css %}
+<style>
+.activity-page {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.activity-header h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
+    font-weight: 750;
+    letter-spacing: -0.5px;
+}
+
+.activity-header p {
+    margin: 0;
+    color: var(--text-muted, #7b8494);
+}
+
+.activity-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.activity-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    background: var(--surface, #fff);
+    color: var(--text, #111827);
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.activity-btn:hover {
+    transform: translateY(-1px);
+    border-color: #cbd5e1;
+    box-shadow: 0 5px 15px rgba(15, 23, 42, .07);
+}
+
+.activity-btn.primary {
+    background: #111827;
+    color: #fff;
+    border-color: #111827;
+}
+
+.activity-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.activity-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.activity-stat {
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 16px;
+    background: var(--surface, #fff);
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .035);
+}
+
+.activity-stat::after {
+    content: "";
+    position: absolute;
+    right: -30px;
+    bottom: -40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, .06);
+}
+
+.stat-label {
+    color: var(--text-muted, #7b8494);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 800;
+    color: var(--text, #111827);
+}
+
+.stat-sub {
+    margin-top: 9px;
+    color: var(--text-muted, #7b8494);
+    font-size: 12px;
+}
+
+.activity-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 15px;
+    border: 1px solid var(--border, #e5e7eb);
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--surface, #fff);
+}
+
+.activity-search {
+    position: relative;
+    flex: 1;
+    min-width: 230px;
+}
+
+.activity-search svg {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 17px;
+    color: #8b95a7;
+}
+
+.activity-search input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px 0 40px;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    outline: none;
+    background: var(--surface, #fff);
+    color: var(--text, #111827);
+    transition: .2s ease;
+}
+
+.activity-search input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, .1);
+}
+
+.activity-filters {
+    display: flex;
+    gap: 9px;
+}
+
+.activity-select {
+    height: 42px;
+    min-width: 130px;
+    padding: 0 35px 0 12px;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    background: var(--surface, #fff);
+    color: var(--text, #111827);
+    outline: none;
+    cursor: pointer;
+}
+
+.activity-table-card {
+    overflow: hidden;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 0 0 16px 16px;
+    background: var(--surface, #fff);
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .035);
+}
+
+.activity-table-wrapper {
+    overflow-x: auto;
+}
+
+.activity-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.activity-table th {
+    padding: 14px 18px;
+    text-align: left;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    font-weight: 750;
+    border-bottom: 1px solid var(--border, #e5e7eb);
+    white-space: nowrap;
+}
+
+.activity-table td {
+    padding: 17px 18px;
+    border-bottom: 1px solid #eef1f5;
+    color: var(--text, #1f2937);
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.activity-table tbody tr {
+    transition: background .18s ease;
+}
+
+.activity-table tbody tr:hover {
+    background: #fafbff;
+}
+
+.activity-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.time-main {
+    font-weight: 650;
+    color: #1f2937;
+}
+
+.time-sub {
+    margin-top: 3px;
+    color: #8a94a6;
+    font-size: 11px;
+}
+
+.result {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.result-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.result.success {
+    color: #16803c;
+}
+
+.result.failed {
+    color: #dc2626;
+}
+
+.result.unknown {
+    color: #64748b;
+}
+
+.risk-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .2px;
+}
+
+.risk-low {
+    background: #ecfdf3;
+    color: #16803c;
+}
+
+.risk-medium {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.risk-high {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.risk-critical {
+    background: #450a0a;
+    color: #fff;
+}
+
+.risk-unknown {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.device-cell {
+    max-width: 260px;
+}
+
+.device-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.device-meta {
+    margin-top: 3px;
+    color: #8a94a6;
+    font-size: 11px;
+}
+
+.ip-cell {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    color: #475569;
+}
+
+.event-type {
+    display: inline-flex;
+    padding: 4px 8px;
+    border-radius: 7px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.activity-empty {
+    display: none;
+    padding: 65px 25px;
+    text-align: center;
+}
+
+.activity-empty-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 15px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.activity-empty h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+}
+
+.activity-empty p {
+    margin: 0;
+    color: #8a94a6;
+    font-size: 13px;
+}
+
+.activity-loading {
+    padding: 50px;
+    text-align: center;
+    color: #64748b;
+}
+
+.activity-spinner {
+    width: 27px;
+    height: 27px;
+    margin: 0 auto 12px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: activitySpin .7s linear infinite;
+}
+
+@keyframes activitySpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.activity-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 18px;
+    border-top: 1px solid #eef1f5;
+    background: #fafbfc;
+}
+
+.activity-count {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.pagination {
+    display: flex;
+    gap: 6px;
+}
+
+.page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #475569;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.page-btn:hover {
+    background: #f8fafc;
+}
+
+.page-btn.active {
+    background: #111827;
+    color: #fff;
+    border-color: #111827;
+}
+
+.page-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.banner-error {
+    margin-bottom: 15px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 13px;
+}
+
+@media (max-width: 1050px) {
+    .activity-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .activity-header {
+        flex-direction: column;
+    }
+
+    .activity-actions {
+        width: 100%;
+    }
+
+    .activity-btn {
+        flex: 1;
+    }
+
+    .activity-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .activity-toolbar {
+        align-items: stretch;
+    }
+
+    .activity-search {
+        width: 100%;
+    }
+
+    .activity-filters {
+        width: 100%;
+    }
+
+    .activity-select {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .activity-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .activity-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-header h1 {
+        font-size: 25px;
+    }
+}
+</style>
+{% endblock %}
+
+
+{% block main_content %}
+
+<div class="activity-page">
+
+    <div class="activity-header">
+
+        <div>
+            <h1>Login Activity</h1>
+            <p>Monitor account authentication events and calculated security risk.</p>
+        </div>
+
+        <div class="activity-actions">
+
+            <button class="activity-btn" type="button" id="activity-refresh">
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 11a8.1 8.1 0 0 0-15.5-2"/>
+                    <path d="M4 5v4h4"/>
+                    <path d="M4 13a8.1 8.1 0 0 0 15.5 2"/>
+                    <path d="M20 19v-4h-4"/>
+                </svg>
+
+                Refresh
+
+            </button>
+
+            <button class="activity-btn primary" type="button" id="activity-export">
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3v12"/>
+                    <path d="m7 10 5 5 5-5"/>
+                    <path d="M5 21h14"/>
+                </svg>
+
+                Export
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="activity-error" class="banner-error" style="display:none;"></div>
+
+
+    <div class="activity-stats">
+
+        <div class="activity-stat">
+            <div class="stat-label">TOTAL LOGINS</div>
+            <div class="stat-value" id="stat-total">—</div>
+            <div class="stat-sub">Recorded authentication events</div>
+        </div>
+
+        <div class="activity-stat">
+            <div class="stat-label">SUCCESSFUL</div>
+            <div class="stat-value" id="stat-success">—</div>
+            <div class="stat-sub">Successful sign-ins</div>
+        </div>
+
+        <div class="activity-stat">
+            <div class="stat-label">FAILED</div>
+            <div class="stat-value" id="stat-failed">—</div>
+            <div class="stat-sub">Rejected authentication attempts</div>
+        </div>
+
+        <div class="activity-stat">
+            <div class="stat-label">HIGH RISK</div>
+            <div class="stat-value" id="stat-risk">—</div>
+            <div class="stat-sub">Events requiring attention</div>
+        </div>
+
+    </div>
+
+
+    <div class="activity-toolbar">
+
+        <div class="activity-search">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7"/>
+                <path d="m20 20-4-4"/>
+            </svg>
+
+            <input
+                type="search"
+                id="activity-search"
+                placeholder="Search IP, device, result or risk..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="activity-filters">
+
+            <select class="activity-select" id="activity-result-filter">
+                <option value="all">All results</option>
+                <option value="success">Successful</option>
+                <option value="failed">Failed</option>
+            </select>
+
+            <select class="activity-select" id="activity-risk-filter">
+                <option value="all">All risk levels</option>
+                <option value="low">Low risk</option>
+                <option value="medium">Medium risk</option>
+                <option value="high">High risk</option>
+                <option value="critical">Critical</option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="activity-table-card">
+
+        <div id="activity-loading" class="activity-loading">
+
+            <div class="activity-spinner"></div>
+
+            <div>Loading security activity...</div>
+
+        </div>
+
+
+        <div class="activity-table-wrapper" id="activity-table-wrapper" style="display:none;">
+
+            <table class="activity-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Time</th>
+                        <th>Result</th>
+                        <th>Event</th>
+                        <th>IP Address</th>
+                        <th>Device</th>
+                        <th>Risk</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="activity-tbody"></tbody>
+
+            </table>
+
+        </div>
+
+
+        <div id="activity-empty" class="activity-empty">
+
+            <div class="activity-empty-icon">
+
+                <svg width="27" height="27" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="1.7">
+
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 7v5l3 2"/>
+
+                </svg>
+
+            </div>
+
+            <h3>No login activity found</h3>
+
+            <p>
+                No authentication events match your current filters.
+            </p>
+
+        </div>
+
+
+        <div class="activity-footer" id="activity-footer" style="display:none;">
+
+            <div class="activity-count" id="activity-count">
+                Showing 0 events
+            </div>
+
+            <div class="pagination" id="activity-pagination"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block page_js %}
+
+<script>
+
+(function () {
+
+    "use strict";
+
+    const state = {
+        all: [],
+        filtered: [],
+        page: 1,
+        pageSize: 10
+    };
+
+
+    const elements = {
+        loading: document.getElementById("activity-loading"),
+        wrapper: document.getElementById("activity-table-wrapper"),
+        tbody: document.getElementById("activity-tbody"),
+        empty: document.getElementById("activity-empty"),
+        footer: document.getElementById("activity-footer"),
+        count: document.getElementById("activity-count"),
+        pagination: document.getElementById("activity-pagination"),
+        error: document.getElementById("activity-error"),
+
+        search: document.getElementById("activity-search"),
+        resultFilter: document.getElementById("activity-result-filter"),
+        riskFilter: document.getElementById("activity-risk-filter"),
+
+        refresh: document.getElementById("activity-refresh"),
+        exportButton: document.getElementById("activity-export"),
+
+        total: document.getElementById("stat-total"),
+        success: document.getElementById("stat-success"),
+        failed: document.getElementById("stat-failed"),
+        risk: document.getElementById("stat-risk")
+    };
+
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function normalizeRisk(value) {
+
+        if (value === null || value === undefined || value === "") {
+            return {
+                text: "Unknown",
+                className: "risk-unknown"
+            };
+        }
+
+        if (typeof value === "number") {
+
+            if (value >= 80) {
+                return {
+                    text: "Critical",
+                    className: "risk-critical"
+                };
+            }
+
+            if (value >= 60) {
+                return {
+                    text: "High",
+                    className: "risk-high"
+                };
+            }
+
+            if (value >= 30) {
+                return {
+                    text: "Medium",
+                    className: "risk-medium"
+                };
+            }
+
+            return {
+                text: "Low",
+                className: "risk-low"
+            };
+        }
+
+        const risk = String(value).toLowerCase();
+
+        if (risk.includes("critical")) {
+            return {
+                text: "Critical",
+                className: "risk-critical"
+            };
+        }
+
+        if (risk.includes("high")) {
+            return {
+                text: "High",
+                className: "risk-high"
+            };
+        }
+
+        if (risk.includes("medium") || risk.includes("moderate")) {
+            return {
+                text: "Medium",
+                className: "risk-medium"
+            };
+        }
+
+        if (risk.includes("low")) {
+            return {
+                text: "Low",
+                className: "risk-low"
+            };
+        }
+
+        return {
+            text: String(value),
+            className: "risk-unknown"
+        };
+    }
+
+
+    function getRiskScore(item) {
+
+        const value =
+            item.risk_score ??
+            item.riskScore ??
+            item.risk ??
+            item.score ??
+            null;
+
+        if (typeof value === "number") {
+            return value;
+        }
+
+        const parsed = Number(value);
+
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+
+    function getRisk(item) {
+
+        const raw =
+            item.risk_level ??
+            item.riskLevel ??
+            item.risk_status ??
+            item.risk ??
+            null;
+
+        if (raw !== null && raw !== undefined) {
+            return normalizeRisk(raw);
+        }
+
+        const score = getRiskScore(item);
+
+        return normalizeRisk(score);
+    }
+
+
+    function getSuccess(item) {
+
+        if (typeof item.success === "boolean") {
+            return item.success;
+        }
+
+        if (typeof item.successful === "boolean") {
+            return item.successful;
+        }
+
+        if (typeof item.result === "string") {
+            return item.result.toLowerCase() === "success";
+        }
+
+        return false;
+    }
+
+
+    function getTimestamp(item) {
+
+        return (
+            item.event_time ||
+            item.created_at ||
+            item.timestamp ||
+            item.time ||
+            item.login_time ||
+            null
+        );
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return {
+                main: "Unknown",
+                sub: ""
+            };
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+
+            return {
+                main: escapeHtml(value),
+                sub: ""
+            };
+
+        }
+
+        return {
+            main: date.toLocaleString([], {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }),
+            sub: date.toLocaleString([], {
+                weekday: "short"
+            })
+        };
+
+    }
+
+
+    function normalizeItem(item) {
+
+        const success = getSuccess(item);
+
+        const risk = getRisk(item);
+
+        return {
+            raw: item,
+
+            success,
+
+            result: success ? "success" : "failed",
+
+            event:
+                item.event_type ||
+                item.eventType ||
+                item.type ||
+                "LOGIN",
+
+            ip:
+                item.ip_address ||
+                item.ip ||
+                "Unknown",
+
+            device:
+                item.device_info ||
+                item.device ||
+                item.user_agent ||
+                "Unknown device",
+
+            riskText: risk.text,
+
+            riskClass: risk.className,
+
+            riskScore: getRiskScore(item),
+
+            timestamp: getTimestamp(item)
+        };
+
+    }
+
+
+    function extractActivity(payload) {
+
+        if (Array.isArray(payload)) {
+            return payload;
+        }
+
+        if (!payload || typeof payload !== "object") {
+            return [];
+        }
+
+        if (Array.isArray(payload.recent_logins)) {
+            return payload.recent_logins;
+        }
+
+        if (Array.isArray(payload.login_activity)) {
+            return payload.login_activity;
+        }
+
+        if (Array.isArray(payload.activity)) {
+            return payload.activity;
+        }
+
+        if (Array.isArray(payload.data)) {
+            return payload.data;
+        }
+
+        if (payload.data && Array.isArray(payload.data.login_activity)) {
+            return payload.data.login_activity;
+        }
+
+        return [];
+    }
+
+
+    async function loadActivity() {
+
+        showLoading();
+
+        hideError();
+
+        try {
+
+            const response = await fetch("/dashboard/data", {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                },
+                credentials: "same-origin",
+                cache: "no-store"
+            });
+
+
+            if (response.status === 401) {
+                window.location.href = "/login";
+                return;
+            }
+
+
+            if (!response.ok) {
+                throw new Error("Unable to load login activity.");
+            }
+
+
+            const payload = await response.json();
+
+            const activity = extractActivity(payload);
+
+            state.all = activity.map(normalizeItem);
+
+            updateStats();
+
+            applyFilters();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showError(
+                error.message ||
+                "Unable to load login activity. Please try again."
+            );
+
+            showEmpty();
+
+        }
+
+    }
+
+
+    function updateStats() {
+
+        const total = state.all.length;
+
+        const successful = state.all.filter(
+            item => item.success
+        ).length;
+
+        const failed = total - successful;
+
+        const highRisk = state.all.filter(
+            item =>
+                item.riskClass === "risk-high" ||
+                item.riskClass === "risk-critical"
+        ).length;
+
+
+        elements.total.textContent = total;
+
+        elements.success.textContent = successful;
+
+        elements.failed.textContent = failed;
+
+        elements.risk.textContent = highRisk;
+
+    }
+
+
+    function applyFilters() {
+
+        const search = elements.search.value
+            .trim()
+            .toLowerCase();
+
+        const result = elements.resultFilter.value;
+
+        const risk = elements.riskFilter.value;
+
+
+        state.filtered = state.all.filter(item => {
+
+            const searchable = [
+                item.ip,
+                item.device,
+                item.event,
+                item.result,
+                item.riskText,
+                item.riskScore
+            ]
+                .join(" ")
+                .toLowerCase();
+
+
+            const matchesSearch =
+                !search ||
+                searchable.includes(search);
+
+
+            const matchesResult =
+                result === "all" ||
+                item.result === result;
+
+
+            const matchesRisk =
+                risk === "all" ||
+                item.riskText.toLowerCase() === risk;
+
+
+            return (
+                matchesSearch &&
+                matchesResult &&
+                matchesRisk
+            );
+
+        });
+
+
+        state.page = 1;
+
+        render();
+
+    }
+
+
+    function render() {
+
+        const total = state.filtered.length;
+
+        if (total === 0) {
+
+            showEmpty();
+
+            return;
+
+        }
+
+
+        hideEmpty();
+
+        elements.wrapper.style.display = "block";
+
+        elements.footer.style.display = "flex";
+
+
+        const totalPages =
+            Math.ceil(total / state.pageSize);
+
+
+        if (state.page > totalPages) {
+            state.page = totalPages;
+        }
+
+
+        const start =
+            (state.page - 1) * state.pageSize;
+
+        const end =
+            start + state.pageSize;
+
+
+        const pageItems =
+            state.filtered.slice(start, end);
+
+
+        elements.tbody.innerHTML =
+            pageItems.map(renderRow).join("");
+
+
+        const from = start + 1;
+
+        const to = Math.min(end, total);
+
+
+        elements.count.textContent =
+            `Showing ${from}–${to} of ${total} events`;
+
+
+        renderPagination(totalPages);
+
+    }
+
+
+    function renderRow(item) {
+
+        const time = formatDate(item.timestamp);
+
+        const resultClass =
+            item.success
+                ? "success"
+                : "failed";
+
+        const resultText =
+            item.success
+                ? "Successful"
+                : "Failed";
+
+
+        const event =
+            escapeHtml(
+                String(item.event).replace(/_/g, " ")
+            );
+
+
+        const device =
+            escapeHtml(item.device);
+
+
+        const ip =
+            escapeHtml(item.ip);
+
+
+        const riskScore =
+            item.riskScore !== null
+                ? `Score ${Math.round(item.riskScore)}`
+                : "Security analysis";
+
+
+        return `
+
+            <tr>
+
+                <td>
+
+                    <div class="time-main">
+                        ${escapeHtml(time.main)}
+                    </div>
+
+                    <div class="time-sub">
+                        ${escapeHtml(time.sub)}
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span class="result ${resultClass}">
+
+                        <span class="result-dot"></span>
+
+                        ${resultText}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span class="event-type">
+                        ${event}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div class="ip-cell">
+                        ${ip}
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="device-cell">
+
+                        <div class="device-name"
+                             title="${device}">
+
+                            ${device}
+
+                        </div>
+
+                        <div class="device-meta">
+                            Authentication device
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span class="risk-badge ${item.riskClass}">
+                        ${escapeHtml(item.riskText)}
+                    </span>
+
+                    <div class="device-meta">
+                        ${riskScore}
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    function renderPagination(totalPages) {
+
+        elements.pagination.innerHTML = "";
+
+
+        const previous = document.createElement("button");
+
+        previous.className = "page-btn";
+
+        previous.textContent = "‹";
+
+        previous.disabled = state.page === 1;
+
+        previous.onclick = function () {
+
+            if (state.page > 1) {
+                state.page--;
+                render();
+            }
+
+        };
+
+
+        elements.pagination.appendChild(previous);
+
+
+        const maxButtons = 5;
+
+        let start =
+            Math.max(
+                1,
+                state.page - Math.floor(maxButtons / 2)
+            );
+
+
+        let end =
+            Math.min(
+                totalPages,
+                start + maxButtons - 1
+            );
+
+
+        if (end - start < maxButtons - 1) {
+
+            start =
+                Math.max(
+                    1,
+                    end - maxButtons + 1
+                );
+
+        }
+
+
+        for (
+            let page = start;
+            page <= end;
+            page++
+        ) {
+
+            const button =
+                document.createElement("button");
+
+
+            button.className =
+                "page-btn" +
+                (page === state.page ? " active" : "");
+
+
+            button.textContent = page;
+
+
+            button.onclick = function () {
+
+                state.page = page;
+
+                render();
+
+            };
+
+
+            elements.pagination.appendChild(button);
+
+        }
+
+
+        const next = document.createElement("button");
+
+        next.className = "page-btn";
+
+        next.textContent = "›";
+
+        next.disabled =
+            state.page === totalPages;
+
+        next.onclick = function () {
+
+            if (state.page < totalPages) {
+
+                state.page++;
+
+                render();
+
+            }
+
+        };
+
+
+        elements.pagination.appendChild(next);
+
+    }
+
+
+    function showLoading() {
+
+        elements.loading.style.display = "block";
+
+        elements.wrapper.style.display = "none";
+
+        elements.empty.style.display = "none";
+
+        elements.footer.style.display = "none";
+
+    }
+
+
+    function showEmpty() {
+
+        elements.loading.style.display = "none";
+
+        elements.wrapper.style.display = "none";
+
+        elements.empty.style.display = "block";
+
+        elements.footer.style.display = "none";
+
+    }
+
+
+    function hideEmpty() {
+
+        elements.loading.style.display = "none";
+
+        elements.empty.style.display = "none";
+
+    }
+
+
+    function showError(message) {
+
+        elements.error.textContent = message;
+
+        elements.error.style.display = "block";
+
+    }
+
+
+    function hideError() {
+
+        elements.error.style.display = "none";
+
+    }
+
+
+    function exportCSV() {
+
+        if (!state.filtered.length) {
+
+            alert("There is no activity to export.");
+
+            return;
+
+        }
+
+
+        const headers = [
+            "Time",
+            "Result",
+            "Event",
+            "IP Address",
+            "Device",
+            "Risk",
+            "Risk Score"
+        ];
+
+
+        const rows =
+            state.filtered.map(item => {
+
+                return [
+                    item.timestamp || "",
+                    item.result,
+                    item.event,
+                    item.ip,
+                    item.device,
+                    item.riskText,
+                    item.riskScore ?? ""
+                ];
+
+            });
+
+
+        const csv = [
+            headers,
+            ...rows
+        ]
+            .map(row =>
+                row.map(value => {
+
+                    const safe =
+                        String(value ?? "")
+                            .replace(/"/g, '""');
+
+                    return `"${safe}"`;
+
+                }).join(",")
+            )
+            .join("\n");
+
+
+        const blob =
+            new Blob([csv], {
+                type: "text/csv;charset=utf-8;"
+            });
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+
+        link.href = url;
+
+        link.download =
+            "login-activity.csv";
+
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+    }
+
+
+    elements.search.addEventListener(
+        "input",
+        applyFilters
+    );
+
+
+    elements.resultFilter.addEventListener(
+        "change",
+        applyFilters
+    );
+
+
+    elements.riskFilter.addEventListener(
+        "change",
+        applyFilters
+    );
+
+
+    elements.refresh.addEventListener(
+        "click",
+        loadActivity
+    );
+
+
+    elements.exportButton.addEventListener(
+        "click",
+        exportCSV
+    );
+
+
+    loadActivity();
+
+})();
+
+</script>
+
+{% endblock %}

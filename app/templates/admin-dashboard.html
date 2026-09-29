@@ -1,0 +1,63 @@
+{% extends "base_app.html" %}
+{% set active_nav = 'admin' %}
+{% block title %}Admin dashboard{% endblock %}
+{% block page_title %}Admin dashboard{% endblock %}
+
+{% block main_content %}
+<div class="page-head">
+  <h1>System overview</h1>
+  <p class="muted">Platform-wide security and usage statistics.</p>
+</div>
+
+<div id="admin-skeleton" class="stack gap-4">
+  <div class="skeleton" style="height:100px; border-radius:14px;"></div>
+  <div class="skeleton" style="height:100px; border-radius:14px;"></div>
+</div>
+<div class="banner banner-error" id="admin-error" style="display:none;"></div>
+
+<div id="admin-root" style="display:none;">
+  <div class="banner banner-warning" id="admin-missing-data-notice" style="display:none; margin-bottom:20px;"></div>
+
+  <div class="stat-grid" style="margin-bottom:20px;">
+    <div class="stat-card">
+      <div class="label">Total users</div>
+      <div class="value" id="admin-total-users">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total alerts</div>
+      <div class="value" id="admin-total-alerts">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Open alerts</div>
+      <div class="value" id="admin-open-alerts">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Critical alerts</div>
+      <div class="value" id="admin-critical-alerts">—</div>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">ML predictions run</div>
+      <div class="value" id="admin-ml-predictions">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Average security score</div>
+      <div class="value" id="admin-avg-score">—</div>
+    </div>
+    <div class="stat-card">
+      <a href="/alerts" class="stack gap-1" style="text-decoration:none; color:inherit;">
+        <div class="label">Alerts</div>
+        <div class="value" style="font-size:15px;">Open alert center →</div>
+      </a>
+    </div>
+    <div class="stat-card">
+      <a href="/analyst-dashboard" class="stack gap-1" style="text-decoration:none; color:inherit;">
+        <div class="label">Monitoring</div>
+        <div class="value" style="font-size:15px;">Open analyst view →</div>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

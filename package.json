@@ -1,0 +1,8 @@
+{
+  "name": "smart-security-platform",
+  "private": true,
+  "scripts": {
+    "dev": "python run.py",
+    "start": "python run.py"
+  }
+}

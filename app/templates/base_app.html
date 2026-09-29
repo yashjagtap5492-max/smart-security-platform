@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/dashboard.css') }}"
+>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/password-security.css') }}"
+>
+
+{% block page_css %}{% endblock %}
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="app-shell">
+
+    <div class="sidebar-scrim"></div>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <span class="sidebar-brand-mark"></span>
+
+            <span class="sidebar-brand-name">
+                Sentinel
+            </span>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-label">
+                Account security
+            </div>
+
+
+            <a
+                class="nav-link {% if active_nav == 'dashboard' %}is-active{% endif %}"
+                href="/dashboard"
+            >
+
+                <span class="nav-icon">▦</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                class="nav-link {% if active_nav == 'activity' %}is-active{% endif %}"
+                href="/activity"
+            >
+
+                <span class="nav-icon">◷</span>
+
+                Login activity
+
+            </a>
+
+
+            <a
+                class="nav-link {% if active_nav == 'alerts' %}is-active{% endif %}"
+                href="/alerts"
+            >
+
+                <span class="nav-icon">⚠</span>
+
+                Alerts
+
+            </a>
+
+
+            <a
+                class="nav-link {% if active_nav == 'password' %}is-active{% endif %}"
+                href="/password-security"
+            >
+
+                <span class="nav-icon">◆</span>
+
+                Password security
+
+            </a>
+
+
+            {% if current_user is defined
+                  and current_user.role in ['ANALYST', 'ADMIN'] %}
+
+                <div class="nav-section-label">
+                    Monitoring
+                </div>
+
+
+                <a
+                    class="nav-link {% if active_nav == 'analyst' %}is-active{% endif %}"
+                    href="/analyst-dashboard"
+                >
+
+                    <span class="nav-icon">◉</span>
+
+                    Analyst dashboard
+
+                </a>
+
+            {% endif %}
+
+
+            {% if current_user is defined
+                  and current_user.role == 'ADMIN' %}
+
+                <div class="nav-section-label">
+                    Administration
+                </div>
+
+
+                <a
+                    class="nav-link {% if active_nav == 'admin' %}is-active{% endif %}"
+                    href="/admin-dashboard"
+                >
+
+                    <span class="nav-icon">▤</span>
+
+                    Admin dashboard
+
+                </a>
+
+            {% endif %}
+
+
+            <a
+                class="nav-link {% if active_nav == 'profile' %}is-active{% endif %}"
+                href="/profile"
+            >
+
+                <span class="nav-icon">⚙</span>
+
+                Profile & Settings
+
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <button
+                class="btn btn-ghost btn-block"
+                data-logout
+                type="button"
+            >
+
+                Log out
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN APPLICATION -->
+
+    <div class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="row gap-3">
+
+                <button
+                    class="menu-btn"
+                    data-menu-toggle
+                    type="button"
+                    aria-label="Open navigation"
+                >
+
+                    ☰
+
+                </button>
+
+
+                <span class="topbar-title">
+
+                    {% block page_title %}{% endblock %}
+
+                </span>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+
+                <!-- USER MENU -->
+
+                <div class="user-menu">
+
+                    <button
+                        class="user-chip"
+                        data-user-menu-toggle
+                        type="button"
+                        aria-label="Open user menu"
+                    >
+
+                        <span class="avatar">
+
+                            {{
+                                (
+                                    current_user.username[0]
+                                    if current_user is defined
+                                    and current_user.username
+                                    else "U"
+                                ) | upper
+
+                            }}
+
+                        </span>
+
+
+                        <span class="text-sm">
+
+                            {{
+                                current_user.username
+                                if current_user is defined
+                                else "Account"
+                            }}
+
+                        </span>
+
+                    </button>
+
+
+                    <div
+                        class="user-menu-panel"
+                        data-user-menu-panel
+                    >
+
+                        <a
+                            class="user-menu-item"
+                            href="/profile"
+                        >
+
+                            Profile & settings
+
+                        </a>
+
+
+                        <a
+                            class="user-menu-item"
+                            href="/password-security"
+                        >
+
+                            Password security
+
+                        </a>
+
+
+                        <button
+                            class="user-menu-item"
+                            data-logout
+                            type="button"
+                        >
+
+                            Log out
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+
+        <main class="main-content">
+
+            {% block main_content %}{% endblock %}
+
+        </main>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}"
+></script>
+
+
+{% block page_js %}{% endblock %}
+
+{% endblock %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/profile.css') }}"
+>

@@ -1,0 +1,140 @@
+/* ==========================================================================
+   auth.css — Login, register, and the 2FA verification step
+   ========================================================================== */
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--sp-9) var(--sp-8);
+}
+
+.auth-panel-inner { width: 100%; max-width: 380px; margin: 0 auto; }
+
+.auth-brand {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin-bottom: var(--sp-9);
+}
+.auth-brand-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  flex: none;
+}
+.auth-brand-name { font-weight: 600; font-size: var(--fs-md); letter-spacing: -0.01em; }
+
+.auth-heading { margin-bottom: var(--sp-7); }
+.auth-heading h1 { margin-bottom: var(--sp-2); }
+.auth-heading p { color: var(--ink-muted); font-size: var(--fs-base); }
+
+.auth-footnote {
+  margin-top: var(--sp-6);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.auth-side {
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--sp-8);
+  position: relative;
+  overflow: hidden;
+}
+.auth-side::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(560px 420px at 85% 15%, rgba(38,71,224,0.35), transparent 60%),
+    radial-gradient(480px 360px at 10% 90%, rgba(38,71,224,0.18), transparent 60%);
+  pointer-events: none;
+}
+.auth-side-content { position: relative; max-width: 420px; }
+.auth-side-quote { font-size: var(--fs-xl); line-height: 1.35; letter-spacing: -0.01em; font-weight: 500; }
+.auth-side-meta { position: relative; font-size: var(--fs-sm); color: rgba(255,255,255,0.6); }
+
+.auth-side-metrics {
+  position: relative;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-5);
+  padding-top: var(--sp-7); margin-top: var(--sp-7);
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+.auth-side-metric .value { font-family: var(--font-mono); font-size: var(--fs-lg); font-weight: 600; }
+.auth-side-metric .label { font-size: var(--fs-xs); color: rgba(255,255,255,0.55); margin-top: 2px; }
+
+/* ---- Password strength meter ---- */
+.pw-strength { margin-top: var(--sp-2); }
+.pw-strength-bar {
+  display: flex; gap: 4px; margin-bottom: var(--sp-2);
+}
+.pw-strength-bar span {
+  height: 4px; flex: 1; border-radius: 2px; background: var(--surface-sunken);
+  transition: background var(--motion-base);
+}
+.pw-strength-label {
+  font-size: var(--fs-xs); font-weight: 600; display: flex; justify-content: space-between; color: var(--ink-faint);
+}
+.pw-strength[data-level="very_weak"] .pw-strength-bar span:nth-child(1) { background: var(--risk-critical); }
+.pw-strength[data-level="weak"] .pw-strength-bar span:nth-child(-n+2) { background: var(--risk-high); }
+.pw-strength[data-level="moderate"] .pw-strength-bar span:nth-child(-n+3) { background: var(--risk-medium); }
+.pw-strength[data-level="strong"] .pw-strength-bar span:nth-child(-n+4) { background: var(--risk-low); }
+.pw-strength[data-level="very_strong"] .pw-strength-bar span { background: var(--risk-low); }
+.pw-strength[data-level="very_weak"] .pw-strength-label-text { color: var(--risk-critical); }
+.pw-strength[data-level="weak"] .pw-strength-label-text { color: var(--risk-high); }
+.pw-strength[data-level="moderate"] .pw-strength-label-text { color: var(--risk-medium); }
+.pw-strength[data-level="strong"] .pw-strength-label-text,
+.pw-strength[data-level="very_strong"] .pw-strength-label-text { color: var(--risk-low); }
+
+.pw-requirements { list-style: none; margin: var(--sp-3) 0 0; padding: 0; display: grid; gap: 6px; }
+.pw-requirements li {
+  display: flex; align-items: center; gap: var(--sp-2);
+  font-size: var(--fs-xs); color: var(--ink-faint);
+}
+.pw-requirements li.is-met { color: var(--risk-low); }
+.pw-requirements li .req-dot {
+  width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.pw-requirements li.is-met .req-dot { background: var(--risk-low); border-color: var(--risk-low); }
+.pw-requirements li.is-met .req-dot::after { content: ""; width: 4px; height: 7px; border-right: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(45deg) translate(-1px,-1px); }
+
+/* ---- OTP input ---- */
+.otp-group { display: flex; gap: var(--sp-2); justify-content: center; margin: var(--sp-2) 0; }
+.otp-digit {
+  width: 46px; height: 54px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+}
+.otp-digit:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+.otp-digit.has-error { border-color: var(--risk-critical); }
+
+.otp-countdown {
+  text-align: center; font-size: var(--fs-sm); color: var(--ink-muted); margin-top: var(--sp-4);
+}
+.otp-countdown .mono { color: var(--ink-2); }
+
+.two-fa-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-md);
+  background: var(--accent-tint); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--sp-5);
+}
+
+@media (max-width: 900px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-side { display: none; }
+  .auth-panel { padding: var(--sp-7) var(--sp-5); }
+}

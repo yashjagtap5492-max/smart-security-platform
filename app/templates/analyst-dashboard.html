@@ -1,0 +1,45 @@
+{% extends "base_app.html" %}
+{% set active_nav = 'analyst' %}
+{% block title %}Analyst dashboard{% endblock %}
+{% block page_title %}Analyst dashboard{% endblock %}
+
+{% block main_content %}
+<div class="page-head">
+  <h1>Security monitoring</h1>
+  <p class="muted">Account risk and alert activity across the platform.</p>
+</div>
+
+<div id="analyst-skeleton" class="stack gap-4">
+  <div class="skeleton" style="height:100px; border-radius:14px;"></div>
+  <div class="skeleton" style="height:220px; border-radius:14px;"></div>
+</div>
+<div class="banner banner-error" id="analyst-error" style="display:none;"></div>
+
+<div id="analyst-root" style="display:none;">
+  <div class="banner banner-warning" id="analyst-missing-data-notice" style="display:none; margin-bottom:20px;">
+    Some statistics below aren't returned by the current <span class="mono">/security/summary</span> response for this role, so they're shown as "—".
+  </div>
+
+  <div class="stat-grid" style="margin-bottom:20px;">
+    <div class="stat-card">
+      <div class="label">Total users</div>
+      <div class="value" id="stat-total-users">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Active alerts</div>
+      <div class="value" id="stat-active-alerts">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Critical alerts</div>
+      <div class="value" id="stat-critical-alerts">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">High-risk accounts</div>
+      <div class="value" id="stat-high-risk-accounts">—</div>
+    </div>
+  </div>
+
+  <div class="section-title"><h3>Recent suspicious events</h3></div>
+  <div class="alert-list" id="analyst-events-list"></div>
+</div>
+{% endblock %}

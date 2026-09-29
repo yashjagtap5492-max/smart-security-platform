@@ -1,0 +1,70 @@
+/* ==========================================================================
+   responsive.css — tablet & mobile adaptations
+   Loaded after base/auth/dashboard so it can override at breakpoints.
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 780px) {
+  .app-shell { display: block; }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    transition: transform var(--motion-base);
+    z-index: 200;
+    box-shadow: var(--shadow-2);
+  }
+  .sidebar.is-open { transform: translateX(0); }
+
+  .sidebar-scrim {
+    display: none;
+    position: fixed; inset: 0; background: rgba(16,19,27,0.4); z-index: 150;
+  }
+  .sidebar-scrim.is-open { display: block; }
+
+  .menu-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    background: none; border: 1px solid var(--border); cursor: pointer; color: var(--ink-2);
+  }
+
+  .topbar { padding: 0 var(--sp-4); }
+  .topbar-title { display: none; }
+  .main-content { padding: var(--sp-4); }
+
+  .dash-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+  .pw-metric-grid { grid-template-columns: 1fr; }
+
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar .input { max-width: none; }
+
+  .alert-item { flex-direction: column; }
+  .alert-actions { width: 100%; }
+  .alert-actions .btn { width: 100%; }
+
+  /* card-ify tables on small screens */
+  .data-table.responsive-cards thead { display: none; }
+  .data-table.responsive-cards, .data-table.responsive-cards tbody, .data-table.responsive-cards tr, .data-table.responsive-cards td {
+    display: block; width: 100%;
+  }
+  .data-table.responsive-cards tr {
+    border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: var(--sp-3); padding: var(--sp-2) var(--sp-3);
+  }
+  .data-table.responsive-cards td {
+    border-bottom: none; display: flex; justify-content: space-between; gap: var(--sp-4); padding: var(--sp-2) var(--sp-1);
+  }
+  .data-table.responsive-cards td::before {
+    content: attr(data-label); color: var(--ink-faint); font-size: var(--fs-xs); font-weight: 600; flex: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .auth-panel { padding: var(--sp-6) var(--sp-4); }
+  .otp-digit { width: 40px; height: 48px; }
+  h1 { font-size: var(--fs-xl); }
+}

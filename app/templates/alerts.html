@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Alerts | Smart Security Platform</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #070b14;
+            --panel: rgba(15, 23, 42, 0.78);
+            --panel-2: rgba(17, 24, 39, 0.92);
+            --border: rgba(148, 163, 184, 0.14);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --cyan: #22d3ee;
+            --blue: #3b82f6;
+            --green: #22c55e;
+            --yellow: #f59e0b;
+            --orange: #f97316;
+            --red: #ef4444;
+            --purple: #a855f7;
+        }
+
+        body {
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(34, 211, 238, 0.10), transparent 30%),
+                radial-gradient(circle at 85% 20%, rgba(59, 130, 246, 0.10), transparent 30%),
+                radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 35%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 45px 45px;
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .topbar {
+            height: 74px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 34px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7, 11, 20, 0.78);
+            backdrop-filter: blur(18px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #06b6d4, #2563eb);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.25);
+            font-size: 21px;
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            letter-spacing: 0.4px;
+        }
+
+        .brand-text p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border-radius: 30px;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.18);
+            color: #86efac;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.45;
+                transform: scale(0.75);
+            }
+        }
+
+        .back-btn {
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.035);
+            color: var(--text);
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .back-btn:hover {
+            border-color: rgba(34, 211, 238, 0.4);
+            background: rgba(34, 211, 238, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            width: min(1380px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 38px 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .hero-left {
+            max-width: 760px;
+        }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .hero h2 {
+            font-size: clamp(28px, 4vw, 46px);
+            line-height: 1.05;
+            letter-spacing: -1.4px;
+            margin-bottom: 12px;
+        }
+
+        .hero h2 span {
+            background: linear-gradient(90deg, #fff, #67e8f9, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .live-indicator {
+            min-width: 190px;
+            padding: 17px;
+            border-radius: 16px;
+            border: 1px solid rgba(34, 211, 238, 0.16);
+            background: linear-gradient(
+                145deg,
+                rgba(34, 211, 238, 0.08),
+                rgba(59, 130, 246, 0.03)
+            );
+        }
+
+        .live-indicator small {
+            color: var(--muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .live-indicator strong {
+            font-size: 18px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            min-height: 125px;
+            border-radius: 18px;
+            background: linear-gradient(
+                145deg,
+                rgba(17, 24, 39, 0.92),
+                rgba(15, 23, 42, 0.66)
+            );
+            border: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            transition: 0.3s ease;
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            right: -35px;
+            bottom: -45px;
+            background: var(--accent);
+            filter: blur(35px);
+            opacity: 0.18;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(148, 163, 184, 0.28);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 750;
+            margin-top: 18px;
+        }
+
+        .critical {
+            --accent: var(--red);
+        }
+
+        .high {
+            --accent: var(--orange);
+        }
+
+        .medium {
+            --accent: var(--yellow);
+        }
+
+        .low {
+            --accent: var(--green);
+        }
+
+        .critical .stat-icon {
+            color: #f87171;
+        }
+
+        .high .stat-icon {
+            color: #fb923c;
+        }
+
+        .medium .stat-icon {
+            color: #fbbf24;
+        }
+
+        .low .stat-icon {
+            color: #4ade80;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(12px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.025);
+            color: #cbd5e1;
+            padding: 9px 13px;
+            border-radius: 9px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: #fff;
+            border-color: rgba(34, 211, 238, 0.35);
+            background: rgba(34, 211, 238, 0.09);
+        }
+
+        .refresh-btn {
+            border: 1px solid rgba(34, 211, 238, 0.25);
+            background: rgba(34, 211, 238, 0.07);
+            color: #67e8f9;
+            padding: 9px 15px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(34, 211, 238, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .alerts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .alert-card {
+            position: relative;
+            display: grid;
+            grid-template-columns: 6px 52px 1fr auto;
+            align-items: center;
+            gap: 18px;
+            padding: 20px;
+            border-radius: 17px;
+            background: linear-gradient(
+                105deg,
+                rgba(15, 23, 42, 0.92),
+                rgba(17, 24, 39, 0.72)
+            );
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: 0.3s ease;
+            animation: slideIn 0.45s ease both;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-card:hover {
+            transform: translateX(4px);
+            border-color: rgba(148, 163, 184, 0.28);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.20);
+        }
+
+        .alert-line {
+            width: 5px;
+            height: 62px;
+            border-radius: 10px;
+            background: var(--severity);
+            box-shadow: 0 0 15px var(--severity);
+        }
+
+        .alert-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--icon-bg);
+            color: var(--severity);
+            font-size: 21px;
+            border: 1px solid var(--icon-border);
+        }
+
+        .alert-main {
+            min-width: 0;
+        }
+
+        .alert-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-bottom: 7px;
+        }
+
+        .alert-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+        }
+
+        .badge-critical {
+            color: #fecaca;
+            background: rgba(239, 68, 68, 0.13);
+            border: 1px solid rgba(239, 68, 68, 0.24);
+        }
+
+        .badge-high {
+            color: #fed7aa;
+            background: rgba(249, 115, 22, 0.13);
+            border: 1px solid rgba(249, 115, 22, 0.24);
+        }
+
+        .badge-medium {
+            color: #fde68a;
+            background: rgba(245, 158, 11, 0.13);
+            border: 1px solid rgba(245, 158, 11, 0.24);
+        }
+
+        .badge-low {
+            color: #bbf7d0;
+            background: rgba(34, 197, 94, 0.13);
+            border: 1px solid rgba(34, 197, 94, 0.24);
+        }
+
+        .alert-description {
+            color: #aebbcf;
+            font-size: 12px;
+            line-height: 1.55;
+            max-width: 750px;
+        }
+
+        .alert-meta {
+            display: flex;
+            gap: 13px;
+            margin-top: 10px;
+            color: #64748b;
+            font-size: 10px;
+            flex-wrap: wrap;
+        }
+
+        .alert-action {
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .resolve-btn {
+            border: 1px solid rgba(34, 197, 94, 0.24);
+            background: rgba(34, 197, 94, 0.07);
+            color: #86efac;
+            padding: 9px 12px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 650;
+            transition: 0.25s;
+        }
+
+        .resolve-btn:hover {
+            background: rgba(34, 197, 94, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .resolved {
+            opacity: 0.58;
+        }
+
+        .resolved .alert-line {
+            background: #64748b;
+            box-shadow: none;
+        }
+
+        .resolved .resolve-btn {
+            color: #94a3b8;
+            border-color: var(--border);
+            background: rgba(255,255,255,0.025);
+            cursor: default;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 70px 20px;
+            border: 1px dashed rgba(148, 163, 184, 0.18);
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.45);
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.25));
+        }
+
+        .empty h3 {
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .empty p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .toast {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            min-width: 260px;
+            padding: 14px 17px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid rgba(34, 211, 238, 0.22);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+            color: #e2e8f0;
+            font-size: 12px;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            z-index: 999;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 950px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .live-indicator {
+                width: 100%;
+            }
+
+            .alert-card {
+                grid-template-columns: 5px 48px 1fr;
+            }
+
+            .alert-action {
+                grid-column: 3;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .brand-text {
+                display: none;
+            }
+
+            .status {
+                display: none;
+            }
+
+            .container {
+                width: min(100% - 28px, 1380px);
+                padding-top: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+                min-height: 105px;
+            }
+
+            .stat-number {
+                font-size: 26px;
+            }
+
+            .toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .alert-card {
+                grid-template-columns: 4px 42px 1fr;
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .alert-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 17px;
+            }
+
+            .alert-title {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">🛡</div>
+
+        <div class="brand-text">
+            <h1>SMART SECURITY PLATFORM</h1>
+            <p>Account Protection & Threat Intelligence</p>
+        </div>
+    </div>
+
+    <div class="top-actions">
+        <div class="status">
+            <span class="status-dot"></span>
+            Security Engine Online
+        </div>
+
+        <button class="back-btn" onclick="goDashboard()">
+            ← Dashboard
+        </button>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+
+        <div class="hero-left">
+            <div class="eyebrow">Security Operations Center</div>
+
+            <h2>
+                Security <span>Alerts</span>
+            </h2>
+
+            <p>
+                Monitor suspicious account activity, authentication risks,
+                unusual devices, IP changes and automated security detections.
+            </p>
+        </div>
+
+        <div class="live-indicator">
+            <small>Monitoring status</small>
+            <strong>● Real-time protection</strong>
+        </div>
+
+    </section>
+
+    <section class="stats">
+
+        <div class="stat-card critical">
+            <div class="stat-top">
+                <span class="stat-label">Critical</span>
+                <div class="stat-icon">⚠</div>
+            </div>
+
+            <div class="stat-number" id="criticalCount">0</div>
+        </div>
+
+        <div class="stat-card high">
+            <div class="stat-top">
+                <span class="stat-label">High Risk</span>
+                <div class="stat-icon">!</div>
+            </div>
+
+            <div class="stat-number" id="highCount">0</div>
+        </div>
+
+        <div class="stat-card medium">
+            <div class="stat-top">
+                <span class="stat-label">Medium</span>
+                <div class="stat-icon">◈</div>
+            </div>
+
+            <div class="stat-number" id="mediumCount">0</div>
+        </div>
+
+        <div class="stat-card low">
+            <div class="stat-top">
+                <span class="stat-label">Low</span>
+                <div class="stat-icon">✓</div>
+            </div>
+
+            <div class="stat-number" id="lowCount">0</div>
+        </div>
+
+    </section>
+
+    <section class="toolbar">
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="ALL">
+                All Alerts
+            </button>
+
+            <button class="filter-btn" data-filter="CRITICAL">
+                Critical
+            </button>
+
+            <button class="filter-btn" data-filter="HIGH">
+                High
+            </button>
+
+            <button class="filter-btn" data-filter="MEDIUM">
+                Medium
+            </button>
+
+            <button class="filter-btn" data-filter="LOW">
+                Low
+            </button>
+
+            <button class="filter-btn" data-filter="RESOLVED">
+                Resolved
+            </button>
+        </div>
+
+        <button class="refresh-btn" onclick="loadAlerts()">
+            ↻ Refresh
+        </button>
+
+    </section>
+
+    <section id="alertsContainer">
+
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading security alerts...
+        </div>
+
+    </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    let alerts = [];
+    let currentFilter = "ALL";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadAlerts();
+
+        document.querySelectorAll(".filter-btn").forEach(button => {
+            button.addEventListener("click", () => {
+
+                document.querySelectorAll(".filter-btn")
+                    .forEach(btn => btn.classList.remove("active"));
+
+                button.classList.add("active");
+
+                currentFilter = button.dataset.filter;
+
+                renderAlerts();
+            });
+        });
+    });
+
+    async function loadAlerts() {
+
+        const container = document.getElementById("alertsContainer");
+
+        container.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                Loading security alerts...
+            </div>
+        `;
+
+        try {
+
+            const response = await fetch("/security/summary", {
+                credentials: "same-origin"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+
+                if (response.status === 401) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                throw new Error(
+                    data.error || "Unable to load alerts"
+                );
+            }
+
+            alerts = data.recent_alerts || [];
+
+            updateStats(data.summary, alerts);
+
+            renderAlerts();
+
+        } catch (error) {
+
+            console.error(error);
+
+            container.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">⚠️</div>
+                    <h3>Unable to load alerts</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    function updateStats(summary, alertList) {
+
+        let critical = 0;
+        let high = 0;
+        let medium = 0;
+        let low = 0;
+
+        alertList.forEach(alert => {
+
+            const severity = String(
+                alert.severity || ""
+            ).toUpperCase();
+
+            if (severity === "CRITICAL") critical++;
+            else if (severity === "HIGH") high++;
+            else if (severity === "MEDIUM") medium++;
+            else if (severity === "LOW") low++;
+        });
+
+        if (summary) {
+
+            critical = Number(
+                summary.critical ||
+                summary.CRITICAL ||
+                critical
+            );
+
+            high = Number(
+                summary.high ||
+                summary.HIGH ||
+                high
+            );
+
+            medium = Number(
+                summary.medium ||
+                summary.MEDIUM ||
+                medium
+            );
+
+            low = Number(
+                summary.low ||
+                summary.LOW ||
+                low
+            );
+        }
+
+        document.getElementById("criticalCount").textContent = critical;
+        document.getElementById("highCount").textContent = high;
+        document.getElementById("mediumCount").textContent = medium;
+        document.getElementById("lowCount").textContent = low;
+    }
+
+    function renderAlerts() {
+
+        const container = document.getElementById(
+            "alertsContainer"
+        );
+
+        let filtered = alerts;
+
+        if (currentFilter === "RESOLVED") {
+
+            filtered = alerts.filter(
+                alert =>
+                    String(alert.status || "")
+                        .toUpperCase() === "RESOLVED"
+            );
+
+        } else if (currentFilter !== "ALL") {
+
+            filtered = alerts.filter(
+                alert =>
+                    String(alert.severity || "")
+                        .toUpperCase() === currentFilter
+            );
+        }
+
+        if (!filtered.length) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">✓</div>
+                    <h3>No alerts found</h3>
+                    <p>
+                        There are no alerts matching the selected filter.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="alerts-container">
+                ${filtered.map(
+                    (alert, index) =>
+                        createAlertCard(alert, index)
+                ).join("")}
+            </div>
+        `;
+    }
+
+    function createAlertCard(alert, index) {
+
+        const severity = String(
+            alert.severity || "LOW"
+        ).toUpperCase();
+
+        const status = String(
+            alert.status || "OPEN"
+        ).toUpperCase();
+
+        const severityClass =
+            severity.toLowerCase();
+
+        const isResolved =
+            status === "RESOLVED";
+
+        const description =
+            alert.description ||
+            "Security event detected by the security engine.";
+
+        const type =
+            alert.alert_type ||
+            alert.type ||
+            "SECURITY_ALERT";
+
+        const created =
+            alert.created_at ||
+            alert.timestamp ||
+            alert.event_time ||
+            null;
+
+        const icon = getAlertIcon(
+            type,
+            severity
+        );
+
+        const timeText = created
+            ? formatDate(created)
+            : "Recently detected";
+
+        return `
+            <article
+                class="alert-card ${isResolved ? "resolved" : ""}"
+                style="
+                    --severity: ${getSeverityColor(severity)};
+                    --icon-bg: ${getSeverityBackground(severity)};
+                    --icon-border: ${getSeverityBorder(severity)};
+                    animation-delay: ${index * 45}ms;
+                "
+            >
+
+                <div class="alert-line"></div>
+
+                <div class="alert-icon">
+                    ${icon}
+                </div>
+
+                <div class="alert-main">
+
+                    <div class="alert-heading">
+
+                        <div class="alert-title">
+                            ${formatAlertType(type)}
+                        </div>
+
+                        <span class="badge badge-${severityClass}">
+                            ${severity}
+                        </span>
+
+                        ${
+                            isResolved
+                            ? `
+                                <span class="badge badge-low">
+                                    RESOLVED
+                                </span>
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+                    <div class="alert-description">
+                        ${escapeHtml(description)}
+                    </div>
+
+                    <div class="alert-meta">
+                        <span>◷ ${timeText}</span>
+                        <span>◆ ${escapeHtml(type)}</span>
+                        <span>● ${status}</span>
+                    </div>
+
+                </div>
+
+                <div class="alert-action">
+
+                    ${
+                        isResolved
+                        ? `
+                            <button
+                                class="resolve-btn"
+                                disabled
+                            >
+                                ✓ Resolved
+                            </button>
+                        `
+                        : `
+                            <button
+                                class="resolve-btn"
+                                onclick="resolveAlert(${alert.id})"
+                            >
+                                Resolve
+                            </button>
+                        `
+                    }
+
+                </div>
+
+            </article>
+        `;
+    }
+
+    async function resolveAlert(alertId) {
+
+        try {
+
+            const response = await fetch(
+                `/security/alerts/${alertId}/resolve`,
+                {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.error ||
+                    "Unable to resolve alert"
+                );
+            }
+
+            showToast(
+                "Security alert resolved successfully."
+            );
+
+            await loadAlerts();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                error.message ||
+                "Unable to resolve alert."
+            );
+        }
+    }
+
+    function getAlertIcon(type, severity) {
+
+        const value = String(type)
+            .toUpperCase();
+
+        if (
+            value.includes("BRUTE") ||
+            value.includes("LOGIN")
+        ) {
+            return "⚡";
+        }
+
+        if (
+            value.includes("PASSWORD")
+        ) {
+            return "🔑";
+        }
+
+        if (
+            value.includes("DEVICE")
+        ) {
+            return "💻";
+        }
+
+        if (
+            value.includes("IP")
+        ) {
+            return "🌐";
+        }
+
+        if (
+            value.includes("RISK")
+        ) {
+            return "⚠";
+        }
+
+        if (severity === "CRITICAL") {
+            return "☠";
+        }
+
+        return "🛡";
+    }
+
+    function getSeverityColor(severity) {
+
+        const colors = {
+            CRITICAL: "#ef4444",
+            HIGH: "#f97316",
+            MEDIUM: "#f59e0b",
+            LOW: "#22c55e"
+        };
+
+        return colors[severity] || "#22c55e";
+    }
+
+    function getSeverityBackground(severity) {
+
+        const backgrounds = {
+            CRITICAL: "rgba(239,68,68,0.10)",
+            HIGH: "rgba(249,115,22,0.10)",
+            MEDIUM: "rgba(245,158,11,0.10)",
+            LOW: "rgba(34,197,94,0.10)"
+        };
+
+        return backgrounds[severity] ||
+            "rgba(34,197,94,0.10)";
+    }
+
+    function getSeverityBorder(severity) {
+
+        const borders = {
+            CRITICAL: "rgba(239,68,68,0.20)",
+            HIGH: "rgba(249,115,22,0.20)",
+            MEDIUM: "rgba(245,158,11,0.20)",
+            LOW: "rgba(34,197,94,0.20)"
+        };
+
+        return borders[severity] ||
+            "rgba(34,197,94,0.20)";
+    }
+
+    function formatAlertType(type) {
+
+        return String(type)
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, char =>
+                char.toUpperCase()
+            );
+    }
+
+    function formatDate(dateValue) {
+
+        try {
+
+            const date = new Date(dateValue);
+
+            if (isNaN(date.getTime())) {
+                return "Recently detected";
+            }
+
+            return date.toLocaleString(
+                undefined,
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+
+        } catch {
+            return "Recently detected";
+        }
+    }
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+    function goDashboard() {
+        window.location.href = "/dashboard";
+    }
+</script>
+
+</body>
+</html>

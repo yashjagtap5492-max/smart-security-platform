@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="auth-shell">
+  <section class="auth-panel">
+    <div class="auth-panel-inner">
+      <div class="auth-brand">
+        <span class="auth-brand-mark" aria-hidden="true"></span>
+        <span class="auth-brand-name">Sentinel</span>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="auth-heading">
+          <h1>Sign in</h1>
+          <p>Access your account security dashboard.</p>
+        </div>
+
+        <div class="banner banner-error" id="login-banner" style="display:none;" role="alert"></div>
+
+        <div class="field">
+          <label for="login-identifier">Email or username</label>
+          <input class="input" type="text" id="login-identifier" name="identifier" autocomplete="username" required>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="input-group">
+            <input class="input" type="password" id="login-password" name="password" autocomplete="current-password" required>
+            <button class="input-action" type="button" data-toggle-password="login-password" aria-label="Show password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="row" style="justify-content:space-between; margin-bottom: 24px;">
+          <label class="checkbox-row">
+            <input type="checkbox" id="login-remember" name="remember">
+            Remember me
+          </label>
+          <a class="text-sm" href="/forgot-password" data-not-implemented>Forgot password?</a>
+        </div>
+
+        <button class="btn btn-primary btn-block" type="submit" id="login-submit">
+          <span class="btn-label">Sign in</span>
+          <span class="spinner"></span>
+        </button>
+      </form>
+
+      <div id="login-2fa" style="display:none;">
+        <div class="two-fa-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <div class="auth-heading">
+          <h1>Enter your verification code</h1>
+          <p>Open your authenticator app and enter the 6-digit code for Sentinel.</p>
+        </div>
+
+        <div class="banner banner-error" id="login-2fa-banner" style="display:none;" role="alert"></div>
+
+        <div class="otp-group" id="login-otp-group">
+          <input class="otp-digit" inputmode="numeric" maxlength="1" aria-label="Digit 1">
+          <input class="otp-digit" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+          <input class="otp-digit" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+          <input class="otp-digit" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+          <input class="otp-digit" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+          <input class="otp-digit" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+        </div>
+        <p class="otp-countdown">Code expires in <span class="mono" id="login-2fa-countdown">05:00</span></p>
+
+        <button class="btn btn-primary btn-block" type="button" id="login-2fa-verify" style="margin-top:20px;">
+          <span class="btn-label">Verify and sign in</span>
+          <span class="spinner"></span>
+        </button>
+        <button class="btn btn-ghost btn-block" type="button" id="login-2fa-back" style="margin-top:8px;">
+          Back to sign in
+        </button>
+      </div>
+
+      <p class="auth-footnote">Don't have an account? <a href="/register">Create one</a></p>
+    </div>
+  </section>
+
+  <aside class="auth-side">
+    <div class="auth-side-content">
+      <p class="auth-side-quote">Every login, scored. Every password, measured. Every risk, explained.</p>
+    </div>
+    <div class="auth-side-metrics">
+      <div class="auth-side-metric">
+        <div class="value">24/7</div>
+        <div class="label">Login monitoring</div>
+      </div>
+      <div class="auth-side-metric">
+        <div class="value">ML</div>
+        <div class="label">Risk detection</div>
+      </div>
+      <div class="auth-side-metric">
+        <div class="value">TOTP</div>
+        <div class="label">Two-factor auth</div>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+<script>
+  document.querySelectorAll('[data-not-implemented]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      Security.toast("Password reset isn't available yet. Contact an administrator to reset your password.", "warning");
+    });
+  });
+</script>
+{% endblock %}
